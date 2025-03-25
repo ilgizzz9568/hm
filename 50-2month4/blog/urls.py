@@ -14,9 +14,10 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+from django.conf import settings
 from django.contrib import admin
 from django.urls import path
-
+from django.conf.urls.static import static
 from posts.views import test_view, home_page_view, post_list_view
 
 urlpatterns = [
@@ -24,4 +25,7 @@ urlpatterns = [
     path('test/', test_view),
     path('', home_page_view),
     path('posts/', post_list_view),
-]
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+
+"http://127.0.0.1:8000/media/avatar.png"
