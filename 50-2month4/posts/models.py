@@ -7,7 +7,12 @@ SELECT * FROM posts; ---> posts = Post.objects.all();
 SELECT * FROM posts WHERE rate > 2; ---> posts = Post.objects.filter(rate_gt=2)
 
 SELECT * FROM posts WHERE id=1; ---> posts = Post.objects.get(id=1);
+
+INSERT INTO posts (title, content) VALUES ('title', 'content' ); --> post = Post.objects.create(title=123, content=456);
+
 """
+
+
 
 class Category(models.Model):
     name = models.CharField(max_length=76)
