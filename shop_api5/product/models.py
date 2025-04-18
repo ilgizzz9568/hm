@@ -16,7 +16,7 @@ class Product(models.Model):
     description = models.TextField(null=True, blank=True)
     price = models.FloatField()
     category = models.ForeignKey('Category', on_delete=models.CASCADE)
-
+    # review = models.TextField(null=True, blank=True)
 
 
     def __str__(self):
@@ -24,11 +24,17 @@ class Product(models.Model):
 
 
 
-
 class Review(models.Model):
-    review = models.TextField()
-    product = models.ForeignKey('Product', on_delete=models.CASCADE)
+    text = models.TextField()
+    product = models.ForeignKey('Product', on_delete=models.CASCADE, related_name='reviews')
+    stars = models.PositiveSmallIntegerField(default=1)
+
+    def save(self, *args, **kwargs):
+        if not 1 <= self.stars <= 5:
+            raise ValueError("Значение рейтинга должно быть от 1 до 5")
+        super().save(*args, **kwargs)
+
 
     def __str__(self):
-        return self.review
+        return self.text
 

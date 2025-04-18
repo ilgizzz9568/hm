@@ -1,9 +1,10 @@
-from rest_framework import status
+from rest_framework import status, generics
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from product.models import Product, Category, Review
-from product.serializers import ProductSerializer, CategorySerializer, ReviewSerializer
-
+from product.serializers import ProductSerializer, CategorySerializer, ReviewSerializer, ProductReviewSerializer
+from rest_framework.views import APIView
+from django.db.models import Count
 
 @api_view(http_method_names=['GET'])
 def product_list_view(request):
@@ -53,6 +54,13 @@ def category_detail_view(request, id):
                          status=status.HTTP_404_NOT_FOUND)
 
 
+class CategoryListAPIView(APIView):
+        def get(self, request):
+            categories = Category.objects.annotate(product_count=Count('product'))
+            serializer = CategorySerializer(categories, many=True)
+            return Response(serializer.data)
+
+
 @api_view(['GET'])
 def review_list_view(request):
     reviews = Review.objects.all()
@@ -71,8 +79,12 @@ def review_detail_view(request, id):
          return Response(data=data,
                          status=status.HTTP_200_OK)
     except Review.DoesNotExist:
-        return Response (data=data,
+         return Response(data=data,
                          status=status.HTTP_404_NOT_FOUND)
+
+class ProductReviewListAPIView(generics.ListAPIView):
+        queryset = Product.objects.prefetch_related('reviews').all()
+        serializer_class = ProductReviewSerializer
 
 
 
