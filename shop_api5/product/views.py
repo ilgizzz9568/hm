@@ -1,3 +1,4 @@
+from django.shortcuts import render
 from rest_framework import status, generics
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -5,6 +6,19 @@ from product.models import Product, Category, Review
 from product.serializers import ProductSerializer, CategorySerializer, ReviewSerializer, ProductReviewSerializer
 from rest_framework.views import APIView
 from django.db.models import Count
+
+
+
+
+@api_view(['GET'])
+def product_review_list(request):
+    queryset = Product.objects.all()
+    serializer = ProductReviewSerializer
+
+    return Response({'queryset': queryset,
+                     'serializer': serializer})
+
+
 
 @api_view(http_method_names=['GET'])
 def product_list_view(request):
@@ -82,9 +96,11 @@ def review_detail_view(request, id):
          return Response(data=data,
                          status=status.HTTP_404_NOT_FOUND)
 
-class ProductReviewListAPIView(generics.ListAPIView):
-        queryset = Product.objects.prefetch_related('reviews').all()
-        serializer_class = ProductReviewSerializer
+
+
+
+
+
 
 
 

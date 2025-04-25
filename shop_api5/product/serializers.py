@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Product, Category, Review
+from .models import Product, Category, Review, ReviewRating
 
 
 class ProductSerializer(serializers.ModelSerializer):
@@ -22,6 +22,21 @@ class ReviewSerializer(serializers.ModelSerializer):
         fields = 'id text stars'.split()
 
 
+
+
+class ProductReviewSerializer(serializers.ModelSerializer):
+    product = ProductSerializer(many=False)
+    review = ReviewSerializer(many=True)
+
+
+
+    class Meta:
+        model = ReviewRating
+        fields = ' title description price category id text stars  '.split()
+
+
+
+
 def get_rating(obj):
     reviews = obj.reviews.all()
     if reviews.exists():
@@ -29,20 +44,11 @@ def get_rating(obj):
     return None
 
 
-class ProductReviewSerializer(serializers.ModelSerializer):
-    review = ReviewSerializer()
-    rating = serializers.SerializerMethodField()
-
-    class Meta:
-        model = Product
-        fields = 'id name reviews rating'.split()
 
 
-    def get_rating(self, obj):
-        reviews = obj.reviews.all()
-        if reviews.exists():
-            return get_rating(reviews)
-        return None
+
+
+
 
 
 
